@@ -1,4 +1,4 @@
-FROM qnib/slurm
+FROM qnib/slurm:syslog
 MAINTAINER "Christian Kniep <christian@qnib.org>"
 
 ADD etc/supervisord.d/slurmd.ini /etc/supervisord.d/
