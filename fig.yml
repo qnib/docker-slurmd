@@ -19,9 +19,6 @@ slurmctld:
     - DC_NAME=dc1
     - SERVICE_6817_NAME=slurmctld
     - ENABLE_SYSLOG=true
-    volumes:
-    - ${HOME}/shared/chome/:/chome/
-    - /Users/kniepbert/Daten/QNIBInc/docker/docker-slurm/etc/consul-template/:/etc/consul-template/
     dns: 127.0.0.1
     hostname: slurmctld
     privileged: true
