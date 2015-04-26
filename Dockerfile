@@ -7,3 +7,4 @@ ADD opt/qnib/jobscripts/ /opt/qnib/jobscripts/
 ADD opt/qnib/bin/gemm_block_mpi_50ms /opt/qnib/bin/
 ADD opt/qnib/bin/gemm_block_mpi_250ms /opt/qnib/bin/
 ADD opt/qnib/bin/gemm_block_mpi_500ms /opt/qnib/bin/
+ADD opt/qnib/bin/generate_work.sh /opt/qnib/bin/generate_work.sh
