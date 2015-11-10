@@ -25,7 +25,7 @@ slurmctld:
     hostname: slurmctld
     privileged: true
 
-slurmd01:
+slurmd:
     image: qnib/slurmd
     links:
     - consul:consul
@@ -35,6 +35,5 @@ slurmd01:
     volumes:
     - ${HOME}/shared/chome/:/chome/
     dns: 127.0.0.1
-    hostname: slurmd01
     privileged: true
 

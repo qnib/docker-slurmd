@@ -17,7 +17,7 @@ The minimal configuration of a SLURM cluster holds
 
 ## Startup
 
-The repository holds a `fig.yml` file which is everything one needs.
+The repository holds a `docker-compose.yml` file which is everything one needs.
 
 ```
 consul:
@@ -25,8 +25,10 @@ consul:
     ports:
      - "8500:8500"
     environment:
-    - DC_NAME=dc1
+    - DC_NAME=qnib
     - ENABLE_SYSLOG=true
+    - BOOTSTRAP_CONSUL=true
+    - RUN_SERVER=true
     dns: 127.0.0.1
     hostname: consul
     privileged: true
@@ -38,9 +40,9 @@ slurmctld:
     links:
     - consul:consul
     environment:
-    - DC_NAME=dc1
-    - SERVICE_6817_NAME=slurmctld
-    - ENABLE_SYSLOG=true
+    - DC_NAME=qnib
+    volumes:
+    - ${HOME}/shared/chome/:/chome/
     dns: 127.0.0.1
     hostname: slurmctld
     privileged: true
@@ -51,19 +53,17 @@ slurmd:
     - consul:consul
     - slurmctld:slurmctld
     environment:
-    - DC_NAME=dc1
-    - ENABLE_SYSLOG=true
+    - DC_NAME=qnib
     volumes:
     - ${HOME}/shared/chome/:/chome/
     dns: 127.0.0.1
-    #hostname: slurmd
     privileged: true
 ```
 
 ### Stack start
 
 ```
-$ fig up -d
+$ docker-compose up -d
 Recreating dockerslurmd_consul_1...
 Recreating dockerslurmd_slurmctld_1...
 Recreating dockerslurmd_slurmd_1...
@@ -73,19 +73,18 @@ Point a browser to `DOCKER_HOST:8500` to have a look at consuls web-ui. The serv
 ### loggin run a job
 
 ```
-$ docker exec -ti dockerslurmd_slurmctld_1 bash
-# sinfo
+$ docker exec -ti dockerslurmd_slurmctld_1 sinfo
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
 qnib*        up   infinite      1   idle d833e248cb38
-[root@slurmctld /]# srun hostname
+$ docker exec -ti dockerslurmd_slurmctld_1 srun hostname
 d833e248cb38
 ```
 
 ## Scale up
 
-One nice feature of fig is that it scales up parts of the stack for you.
+One nice feature of compose is that it scales up parts of the stack for you.
 ```
-$ fig scale slurmd=5
+$ docker-compose scale slurmd=5
 Starting dockerslurmd_slurmd_2...
 Starting dockerslurmd_slurmd_3...
 Starting dockerslurmd_slurmd_4...
@@ -96,10 +95,10 @@ $
 After the slurm service has settled (takes some time, since my slurm-update is quite rough)
 
 ```
-# sinfo
+$ docker exec -ti dockerslurmd_slurmctld_1 sinfo
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
 qnib*        up   infinite      5   idle 4534f50de0fb,c3bcc3959927,e9d9d816eddb,ec6428b4c4c1,f30d5d1aafbe
-# srun -N 4 hostname
+$ docker exec -ti dockerslurmd_slurmctld_1 srun -N 4 hostname
 c3bcc3959927
 e9d9d816eddb
 4534f50de0fb
