@@ -3,8 +3,10 @@ consul:
     ports:
      - "8500:8500"
     environment:
-    - DC_NAME=dc1
+    - DC_NAME=qnib
     - ENABLE_SYSLOG=true
+    - BOOTSTRAP_CONSUL=true
+    - RUN_SERVER=true
     dns: 127.0.0.1
     hostname: consul
     privileged: true
@@ -16,23 +18,23 @@ slurmctld:
     links:
     - consul:consul
     environment:
-    - DC_NAME=dc1
-    - SERVICE_6817_NAME=slurmctld
-    - ENABLE_SYSLOG=true
+    - DC_NAME=qnib
+    volumes:
+    - ${HOME}/shared/chome/:/chome/
     dns: 127.0.0.1
     hostname: slurmctld
     privileged: true
 
-slurmd:
+slurmd01:
     image: qnib/slurmd
     links:
     - consul:consul
     - slurmctld:slurmctld
     environment:
-    - DC_NAME=dc1
-    - ENABLE_SYSLOG=true
+    - DC_NAME=qnib
     volumes:
     - ${HOME}/shared/chome/:/chome/
     dns: 127.0.0.1
-    #hostname: slurmd
+    hostname: slurmd01
     privileged: true
+
