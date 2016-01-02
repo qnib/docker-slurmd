@@ -3,7 +3,7 @@
     "name": "slurmd",
     "port": 6818,
     "check": {
-      "script": "supervisorctl status slurmd|grep RUNNING",
+      "script": "/opt/qnib/slurm/bin/check_slurmd.sh",
       "interval": "10s"
     }
   }
